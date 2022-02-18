@@ -21,7 +21,7 @@
         </div>
       </section>
       <section class="votes">
-        <VotesDisplay :colors="candidatesColors"/>
+        <VotesDisplay :colors="candidatesColors" :candidates="candidates"/>
       </section>
     </div>
   </q-layout>
@@ -59,7 +59,6 @@ export default {
     axios.get(constants.serverIp + 'candidates/').then((req) => {
       this.candidates = req.data
       this.candidatesColors = this.generateCandidatesColors()
-      console.log(this.candidatesColors)
     })
   },
   data() {

@@ -1,81 +1,79 @@
 <template>
   <div class="votes-display"
        :style="{
-    'grid-template-columns': `repeat(${columnsCount})`,
-    'grid-template-rows': `repeat(${rowsCount})`,
+    'grid-template-columns': `repeat(${columnsTemplate})`,
+    'grid-template-rows': `repeat(${rowsTemplate})`,
   }">
     <div class="candidate-bar flex items-center justify-center text-center"
-         v-for="id in candidatesCounts"
+         v-for="id in candidatesCount"
          :key="id"
-         :style="{'background-color': this.candidateVoteColor(id)}"
+         :style="{'background-color': this.colors[id - 1]}"
     >
+
     </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
-import constants from "src/js/constants";
-
-
 export default {
   name: "VotesDisplay",
   props: {
     colors: {
       required: true,
     },
+    candidates: {
+      required: true,
+    }
   },
   mounted() {
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     })
-    this.onResize()
-    axios.get(constants.serverIp + 'candidates/').then((req) => {
-      let request = req.data
-      this.candidates = request
-      this.candidatesNames = Object.keys(request)
-      this.candidatesCounts = this.candidatesNames.length
-      // console.log(request)
-      this.gridSettings = `${this.candidatesCounts},`
-      for (let candidatesData of Object.values(this.candidates)) {
-        this.gridSettings += `${candidatesData.percentage}% `
-      }
-    })
-
   },
   data() {
     return {
-      gridSettings: null,
-      candidates: null,
-      candidatesNames: null,
-      candidatesCounts: null,
-      windowWidth: null,
-      columnsCount: null,
-      rowsCount: null,
+      windowWidth: window.innerWidth,
     }
   },
   methods: {
     onResize(){
-      if (window.innerWidth < 768){
-        this.columnsCount = '1, auto'
-        this.rowsCount = this.gridSettings
-      }
-      else {
-        this.columnsCount = this.gridSettings
-        this.rowsCount = '1, auto'
-      }
+      this.windowWidth = window.innerWidth
     },
-    candidateVoteColor(id){
-      if (this.colors){
-        return this.colors[id]
+  },
+  computed:{
+    candidatesCount(){
+      if (this.candidates){
+        return Object.keys(this.candidates).length
       }
-      return 'red'
+      return 0
+    },
+    candidatesPercentage(){
+      if (this.candidates){
+        return Object.values(this.candidates).map((object) => object.percentage)
+      }
+      return []
+    },
+    gridSettings(){
+      let settings = `${this.candidatesCount},`
+      return settings + this.candidatesPercentage.join('% ') + '%'
+    },
+    rowsTemplate(){
+      if (this.windowWidth < 768){
+        return this.gridSettings
+      }
+      return '1, auto'
+    },
+    columnsTemplate(){
+
+      if (this.windowWidth < 768){
+        return '1, auto'
+      }
+      return this.gridSettings
     }
   },
   beforeUnmount() {
     window.removeEventListener('resize', this.onResize);
   },
-
 }
 </script>
 
@@ -83,21 +81,16 @@ export default {
 .votes-display {
   width: 100%;
   min-height: 10px;
-  //background-color: red;
   display: grid;
 }
 
 .candidate-bar {
   overflow: hidden;
-  //padding-top: 10px;
-  //padding-bottom: 10px;
 }
 
 @media (max-width: 768px) {
   .votes-display {
     height: 100vh;
-    //grid-column: auto;
-
   }
 }
 </style>
