@@ -8,7 +8,7 @@
 import Logo from "components/Logo";
 
 export default {
-  name: "Index",
+  username: "Index",
 
 }
 </script>

@@ -3,12 +3,11 @@
     <header class="">
       <div class="limiter flex justify-between items-center q-mb-sm">
         <Logo>Выборы ЮФМЛ</Logo>
-        <HeaderNavigation/>
+        <HeaderNavigation v-if="!sessionId"/>
       </div>
     </header>
     <div class="limiter">
       <section class="candidates-wrapper q-mb-xl">
-        <!--        <h2 class="q-my-md">Кандидаты:</h2>-->
         <div class="candidates flex justify-center">
           <Candidate
             v-for="(candidate, candidateName, id) in candidates"
@@ -20,7 +19,7 @@
           />
         </div>
       </section>
-      <section class="votes">
+      <section class="votes q-mb-xl" v-if="isVoted">
         <VotesDisplay :colors="candidatesColors" :candidates="candidates"/>
       </section>
     </div>
@@ -48,7 +47,7 @@ function hsbToHex(h, s, b) {
 }
 
 export default {
-  name: "IndexLayout",
+  username: "IndexLayout",
   components: {
     Logo,
     HeaderNavigation,
@@ -68,6 +67,7 @@ export default {
     }
   },
   methods: {
+    // ...mapGetters('mainStore', ['sessionId']),
     generateCandidatesColors() {
       let colors = []
       let candidatesCount = Object.keys(this.candidates).length
@@ -75,8 +75,12 @@ export default {
         colors.push(hsbToHex(hue * 360 / candidatesCount, 52, 70))
       }
       return colors
-    }
+    },
+
   },
+  computed: {
+    ...mapGetters('mainStore', ['sessionId', 'isVoted'])
+  }
 
 }
 </script>

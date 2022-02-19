@@ -4,19 +4,18 @@
     'grid-template-columns': `repeat(${columnsTemplate})`,
     'grid-template-rows': `repeat(${rowsTemplate})`,
   }">
-    <div class="candidate-bar flex items-center justify-center text-center"
+    <div class="candidate-bar-part flex items-center justify-center text-center"
          v-for="id in candidatesCount"
          :key="id"
          :style="{'background-color': this.colors[id - 1]}"
     >
-
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "VotesDisplay",
+  username: "VotesDisplay",
   props: {
     colors: {
       required: true,
@@ -82,10 +81,13 @@ export default {
   width: 100%;
   min-height: 10px;
   display: grid;
+
 }
 
-.candidate-bar {
+.candidate-bar-part  {
   overflow: hidden;
+  //font-size: 100%;
+
 }
 
 @media (max-width: 768px) {

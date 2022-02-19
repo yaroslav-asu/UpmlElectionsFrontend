@@ -1,7 +1,6 @@
-export function isLogged(state){
-  return state.isLogged
+export function sessionId(state){
+  return state.sessionId
 }
-
-export function serverIp(state){
-  return state.serverIp
+export  function isVoted(state){
+  return state.isVoted
 }

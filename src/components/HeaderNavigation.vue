@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name: "HeaderNavigation",
+  username: "HeaderNavigation",
   data() {
     return {
       userName: 'UserName',

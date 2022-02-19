@@ -2,6 +2,7 @@ import { store } from 'quasar/wrappers'
 import { createStore } from 'vuex'
 
 import mainStore from './MainStore'
+import createPersistedState from 'vuex-persistedstate'
 // import example from './module-example'
 
 /*
@@ -20,6 +21,7 @@ export default store(function (/* { ssrContext } */) {
 
       // example
     },
+    plugins: [createPersistedState()],
 
     // enable strict mode (adds overhead!)
     // for dev mode and --debug builds only
