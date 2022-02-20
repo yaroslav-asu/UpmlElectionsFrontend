@@ -1,9 +1,10 @@
 <template>
   <q-layout class="flex justify-center items-center">
     <q-card class="q-pa-xl">
-      <form
+      <q-form
         class="flex column justify-center items-center"
         @submit="onSubmit"
+
       >
         <h3 class="q-mb-sm">Вход</h3>
         <q-input type="text"
@@ -26,7 +27,7 @@
         />
         <q-btn color="primary" class="q-mt-sm" type="submit">Вход</q-btn>
         <a href="/" class="q-mt-md">На главную</a>
-      </form>
+      </q-form>
     </q-card>
   </q-layout>
 </template>
@@ -43,18 +44,15 @@ export default {
   setup() {
     let $q = useQuasar()
     return {
-      triggerNegative(message) {
+      triggerNotification(message, type) {
         $q.notify({
-          type: 'negative',
+          type: type,
           message: message
         })
       },
     }
   },
   data() {
-    // setInterval(() => {
-    //   console.log(this.serverIp + 'login/?name=' + this.name + '&surname=' + this.surname + '&patronymic=' + this.patronymic + '&password=' + this.password.toString())
-    // })
     return {
       username: ref(null),
       password: ref(null),
@@ -84,12 +82,12 @@ export default {
         let sessionId = req.data['session_id']
         if (sessionId) {
           this.login(sessionId)
-          console.log(sessionId)
+          this.$router.push('/')
         } else {
-          this.triggerNegative('Неправильное ФИО или пароль')
+          this.triggerNotification('Неправильное ФИО или пароль', 'negative')
         }
       }).catch((err) => {
-        console.log(err)
+        this.triggerNotification(err, 'warning')
       })
     },
   }

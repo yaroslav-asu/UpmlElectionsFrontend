@@ -1,11 +1,11 @@
 <template>
   <div class="candidate flex column justify-center items-center q-mt-lg">
     <div class="image-wrapper flex column justify-center">
-      <img :src="imagePath" alt="Фото кондидата">
+      <img :src="image" alt="Фото кондидата">
     </div>
     <h4>{{ name }}</h4>
     <div class="color-line" :style="{'background-color': color}"/>
-    <q-btn :style="{'background-color': color}" class="q-mt-md" v-if="isVoted" @click="vote">Проголосовать</q-btn>
+    <q-btn :style="{'background-color': color}" class="q-mt-md" v-if="sessionId && !isVoted" @click="vote">Проголосовать</q-btn>
   </div>
 </template>
 
@@ -17,17 +17,18 @@ import constants from "src/js/constants";
 export default {
   username: "Elected",
   props: {
-    imagePath: {default: 'http://www.rosphoto.com/images/u/articles/1510/4_8.jpg'},
+    image: {default: 'http://www.rosphoto.com/images/u/articles/1510/4_8.jpg'},
     name: {default: 'Владимир Симкин'},
     percentage: {default: 100},
     color: {default: 'red'},
+
   },
   methods: {
     ...mapMutations('mainStore', ['mutateVote']),
     vote() {
       axios.post(constants.serverIp + 'vote/', {
         session_id: this.sessionId,
-        candidate_id: 1
+        candidate_name: this.name
       }).then((req) => {
         console.log(req)
       }).catch((req) => {

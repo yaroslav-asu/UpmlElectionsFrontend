@@ -3,19 +3,19 @@
     <header class="">
       <div class="limiter flex justify-between items-center q-mb-sm">
         <Logo>Выборы ЮФМЛ</Logo>
-        <HeaderNavigation v-if="!sessionId"/>
+        <HeaderNavigation/>
       </div>
     </header>
     <div class="limiter">
       <section class="candidates-wrapper q-mb-xl">
         <div class="candidates flex justify-center">
           <Candidate
-            v-for="(candidate, candidateName, id) in candidates"
+            v-for="(candidate, id) in candidates"
             :key="candidate"
-            :image-path="candidate.imagePath"
+            :image="candidate.image"
             :color="candidatesColors[id]"
-            :name="candidateName"
-            :percentage="candidate.percentage"
+            :name="candidate.name + ' ' + candidate.surname"
+            :percentage="candidate.offlineVotes"
           />
         </div>
       </section>
@@ -58,6 +58,7 @@ export default {
     axios.get(constants.serverIp + 'candidates/').then((req) => {
       this.candidates = req.data
       this.candidatesColors = this.generateCandidatesColors()
+      console.log(req.data)
     })
   },
   data() {

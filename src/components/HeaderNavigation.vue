@@ -1,6 +1,6 @@
 <template>
-  <nav v-if="isLogged">
-    {{ userName }}
+  <nav v-if="sessionId">
+    {{ name }}
   </nav>
   <nav v-else>
     <a href="/login">Вход</a>
@@ -9,13 +9,24 @@
 </template>
 
 <script>
+import axios from "axios";
+import constants from "src/js/constants";
+import {mapGetters} from "vuex";
+
 export default {
   username: "HeaderNavigation",
+  mounted() {
+    axios.get(constants.serverIp + 'user-name/' + this.sessionId).then((req) => {
+      this.name = req.data.name
+    })
+  },
   data() {
     return {
-      userName: 'UserName',
-      isLogged: false,
+      name: null,
     }
+  },
+  computed: {
+    ...mapGetters('mainStore', ['sessionId']),
   }
 }
 </script>

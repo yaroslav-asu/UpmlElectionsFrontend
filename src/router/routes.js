@@ -15,6 +15,21 @@ const routes = [
     ]
   },
   {
+    path: '/admin',
+    component: () => import('layouts/AdminLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/AdminPanel.vue') }
+    ]
+  },
+  {
+    path: '/image',
+    component: () => import('layouts/ImageLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/AdminPanel.vue') }
+    ]
+  },
+
+  {
     path: '/:catchAll(.*)*',
     component: () => import('pages/Error404.vue')
   }
