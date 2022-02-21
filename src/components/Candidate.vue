@@ -1,11 +1,19 @@
 <template>
-  <div class="candidate flex column justify-center items-center q-mt-lg">
-    <div class="image-wrapper flex column justify-center">
-      <img :src="image" alt="Фото кондидата">
+  <div class="candidate-wrapper flex column justify-center items-center"
+       v-if="!(candidate.name.includes('Против') && role === 2)">
+    <div class="candidate shadow-10 flex column justify-center items-center q-mt-lg">
+      <div class="image-wrapper flex column justify-center">
+        <img :src="candidate.image" alt="Фото кондидата">
+      </div>
+      <h4 class="q-my-sm">{{ candidate.name + ' ' + candidate.surname }}</h4>
+      <h6>Голосов онлайн: {{ candidate.onlineVotes }}</h6>
+      <h6>Голосов офлайн: {{ candidate.offlineVotes }}</h6>
+      <div class="color-line" :style="{'background-color': color}"/>
+
     </div>
-    <h4>{{ name }}</h4>
-    <div class="color-line" :style="{'background-color': color}"/>
-    <q-btn :style="{'background-color': color}" class="q-mt-md" v-if="sessionId && !isVoted" @click="vote">Проголосовать</q-btn>
+    <q-btn :style="{'background-color': color}" class="q-mt-md" v-if="sessionId && !isVoted && role !== 2" @click="vote">
+      Проголосовать
+    </q-btn>
   </div>
 </template>
 
@@ -16,34 +24,88 @@ import constants from "src/js/constants";
 
 export default {
   username: "Elected",
+  // data() {
+  //   // setInterval(() => {
+  //   //   console.log(this.sessionId)
+  //   // })
+  //   // this.role = this.getRole(this.sessionId)
+  //   return {
+  //     // role: null
+  //   }
+  // },
   props: {
-    image: {default: 'http://www.rosphoto.com/images/u/articles/1510/4_8.jpg'},
-    name: {default: 'Владимир Симкин'},
-    percentage: {default: 100},
+    candidate: {
+      default: {
+        name: 'Voloďa',
+        surname: 'Simkin',
+        image: 'http://www.rosphoto.com/images/u/articles/1510/4_8.jpg',
+        offlineVotes: 10000,
+        onlineVotes: 10000,
+      }
+    },
     color: {default: 'red'},
-
   },
   methods: {
     ...mapMutations('mainStore', ['mutateVote']),
     vote() {
       axios.post(constants.serverIp + 'vote/', {
         session_id: this.sessionId,
-        candidate_name: this.name
+        candidate_id: this.candidate.candidateId
       }).then((req) => {
         console.log(req)
       }).catch((req) => {
         console.log(req)
       })
       this.mutateVote()
-    }
+    },
+    // async getRole(sessionId) {
+    //   let role
+    //   await axios.get(constants.serverIp + 'get-role/' + sessionId).then((req) => {
+    //     role = req.data
+    //   }).catch((req) => {
+    //     console.log(req)
+    //   })
+    //   return role
+    // }
   },
   computed: {
-    ...mapGetters('mainStore', ['sessionId', 'isVoted'])
-  }
+    ...mapGetters('mainStore', ['sessionId', 'isVoted', 'candidatesShow', 'role']),
+    // role(){
+    //   let role
+    //   this.getRole(this.sessionId).then(req => {
+    //     role = req
+    //   })
+    //   // console.log()
+    //   return role
+    // },
+    // sessionIdValue(){
+    //   return this.sessionId
+    // }
+  },
+  // watch: {
+  //   sessionIdValue: function () {
+  //     if (this.sessionId) {
+  //       console.log('a' + this.sessionId)
+  //       this.role = this.getRole(this.sessionId)
+  //     }
+  //     console.log(this.role)
+  //   }
+  // }
 }
 </script>
 
 <style scoped>
+.candidate-wrapper {
+  max-width: 23%;
+  margin-left: 1%;
+  margin-right: 1%;
+}
+
+.candidate {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
 .image-wrapper {
   flex-grow: 1;
 }
@@ -57,7 +119,7 @@ img {
 }
 
 .color-line {
-  height: 5px;
+  height: 20px;
   width: 100%;
 }
 

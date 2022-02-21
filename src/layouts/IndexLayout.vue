@@ -1,25 +1,24 @@
 <template>
   <q-layout class="flex column">
     <header class="">
-      <div class="limiter flex justify-between items-center q-mb-sm">
+      <div class="limiter flex justify-between items-center q-my-sm">
         <Logo>Выборы ЮФМЛ</Logo>
-        <HeaderNavigation/>
+        <HeaderNavigation v-if="isNameShown"/>
       </div>
     </header>
+
     <div class="limiter">
       <section class="candidates-wrapper q-mb-xl">
         <div class="candidates flex justify-center">
           <Candidate
             v-for="(candidate, id) in candidates"
             :key="candidate"
-            :image="candidate.image"
+            :candidate="candidate"
             :color="candidatesColors[id]"
-            :name="candidate.name + ' ' + candidate.surname"
-            :percentage="candidate.offlineVotes"
           />
         </div>
       </section>
-      <section class="votes q-mb-xl" v-if="isVoted">
+      <section class="votes q-mb-xl" v-if="isVoted || isVoteDisplayShown">
         <VotesDisplay :colors="candidatesColors" :candidates="candidates"/>
       </section>
     </div>
@@ -55,32 +54,40 @@ export default {
     VotesDisplay,
   },
   mounted() {
+
     axios.get(constants.serverIp + 'candidates/').then((req) => {
       this.candidates = req.data
-      this.candidatesColors = this.generateCandidatesColors()
-      console.log(req.data)
+      // this.candidatesColors = this.generateCandidatesColors()
     })
   },
   data() {
     return {
       candidates: null,
-      candidatesColors: null,
+      // candidatesColors: null,
+      width: null,
+      role: null,
     }
   },
   methods: {
     // ...mapGetters('mainStore', ['sessionId']),
-    generateCandidatesColors() {
+    generateCandidatesColors(count) {
       let colors = []
-      let candidatesCount = Object.keys(this.candidates).length
+      let candidatesCount = count
       for (let hue = 0; hue < candidatesCount; hue++) {
-        colors.push(hsbToHex(hue * 360 / candidatesCount, 52, 70))
+        colors.push(hsbToHex(hue * 360 / candidatesCount, 72, 51))
       }
       return colors
     },
 
   },
   computed: {
-    ...mapGetters('mainStore', ['sessionId', 'isVoted'])
+    ...mapGetters('mainStore', ['sessionId', 'isVoted', 'isVoteDisplayShown', 'isNameShown', 'candidatesShow']),
+    candidatesColors() {
+      if (this.candidates) {
+        return this.generateCandidatesColors(Object.keys(this.candidates).length)
+      }
+      return this.generateCandidatesColors(10)
+    }
   }
 
 }
@@ -91,12 +98,16 @@ export default {
 header {
   background-color: $primary;
   color: white;
+
+  .limiter {
+    height: 100%;
+  }
 }
 
-.candidates {
+.candidate-wrapper {
   width: 100%;
 
-  .candidate {
+  .candidate-wrapper {
     max-width: 22%;
     margin-left: 1.5%;
     margin-right: 1.5%;
@@ -104,7 +115,7 @@ header {
 }
 
 @media (max-width: 768px) {
-  .candidate {
+  .candidate-wrapper {
     max-width: 45% !important;
     margin-top: 5%;
     margin-bottom: 5%;
@@ -112,7 +123,7 @@ header {
 }
 
 @media (max-width: $breakpoint-xs-max) {
-  .candidate {
+  .candidate-wrapper {
     max-width: 100% !important;
     margin-top: 5%;
     margin-bottom: 5%;

@@ -61,17 +61,17 @@ export default {
   },
   computed: {
     name() {
-      return this.username.toString().split(' ')[0]
+      return this.username.toString().split(' ')[1]
     },
     surname() {
-      return this.username.toString().split(' ')[1]
+      return this.username.toString().split(' ')[0]
     },
     patronymic() {
       return this.username.toString().split(' ')[2]
     }
   },
   methods: {
-    ...mapMutations('mainStore', ['login']),
+    ...mapMutations('mainStore', ['login', 'changeRole']),
     onSubmit() {
       axios.post(constants.serverIp + 'login/', {
         name: this.name,
@@ -82,6 +82,9 @@ export default {
         let sessionId = req.data['session_id']
         if (sessionId) {
           this.login(sessionId)
+          axios.get(constants.serverIp + 'get-role/' + sessionId).then(req => {
+            this.changeRole(req.data)
+          })
           this.$router.push('/')
         } else {
           this.triggerNotification('Неправильное ФИО или пароль', 'negative')
@@ -90,7 +93,8 @@ export default {
         this.triggerNotification(err, 'warning')
       })
     },
-  }
+  },
+
 }
 </script>
 

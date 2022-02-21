@@ -1,6 +1,6 @@
 <template>
   <nav v-if="sessionId">
-    {{ name }}
+    <h6>{{ name }}</h6>
   </nav>
   <nav v-else>
     <a href="/login">Вход</a>

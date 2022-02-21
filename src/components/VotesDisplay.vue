@@ -14,6 +14,9 @@
 </template>
 
 <script>
+import axios from "axios";
+import constants from "src/js/constants";
+
 export default {
   username: "VotesDisplay",
   props: {
@@ -28,43 +31,54 @@ export default {
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     })
+    axios.get(constants.serverIp + 'percentage/').then((req) => {
+      this.candidatesPercentage = Object.values(req.data)
+    })
   },
   data() {
     return {
       windowWidth: window.innerWidth,
+      candidatesPercentage: null,
     }
   },
   methods: {
-    onResize(){
+    onResize() {
       this.windowWidth = window.innerWidth
     },
   },
-  computed:{
-    candidatesCount(){
-      if (this.candidates){
+  computed: {
+    candidatesCount() {
+      if (this.candidates) {
         return Object.keys(this.candidates).length
       }
       return 0
     },
-    candidatesPercentage(){
-      if (this.candidates){
-        return Object.values(this.candidates).map((object) => object.percentage)
+    // candidatesPercentage() {
+    //   if (this.candidates) {
+    //     for (let candidate of this.candidates) {
+    //       let candidateVotesCount = candidate.onlineVotes + candidate.offlineVotes
+    //       // console.log(candidate)
+    //     }
+    //     return Object.values(this.candidates).map((object) => object.percentage)
+    //   }
+    //   return []
+    // },
+    gridSettings() {
+      if (this.candidatesPercentage) {
+        let settings = `${this.candidatesCount},`
+        return settings + this.candidatesPercentage.join('% ') + '%'
       }
-      return []
+      return null
     },
-    gridSettings(){
-      let settings = `${this.candidatesCount},`
-      return settings + this.candidatesPercentage.join('% ') + '%'
-    },
-    rowsTemplate(){
-      if (this.windowWidth < 768){
+    rowsTemplate() {
+      if (this.windowWidth < 768) {
         return this.gridSettings
       }
       return '1, auto'
     },
-    columnsTemplate(){
+    columnsTemplate() {
 
-      if (this.windowWidth < 768){
+      if (this.windowWidth < 768) {
         return '1, auto'
       }
       return this.gridSettings
@@ -79,12 +93,13 @@ export default {
 <style lang="scss" scoped>
 .votes-display {
   width: 100%;
-  min-height: 10px;
+  min-height: 15px;
   display: grid;
-
+  border-radius: 5px;
+  overflow: hidden;
 }
 
-.candidate-bar-part  {
+.candidate-bar-part {
   overflow: hidden;
   //font-size: 100%;
 
