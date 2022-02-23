@@ -52,10 +52,17 @@ export default {
       },
     }
   },
+  mounted() {
+    // let name = null, password = null
+    if (this.$route.params.name) {
+      this.username = this.$route.params.name
+      this.password = this.$route.params.password
+    }
+  },
   data() {
     return {
-      username: ref(null),
-      password: ref(null),
+      username: null,
+      password: null,
       serverIp: constants.serverIp
     }
   },
