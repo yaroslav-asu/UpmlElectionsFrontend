@@ -6,5 +6,7 @@ export default function () {
     isNameShown: true,
     candidatesShow: [],
     role: 0,
+    isEnded: false,
+    winnerName: '',
   }
 }

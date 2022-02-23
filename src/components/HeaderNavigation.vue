@@ -16,6 +16,7 @@ import {mapGetters} from "vuex";
 export default {
   username: "HeaderNavigation",
   mounted() {
+    console.log(this.sessionId)
     axios.get(constants.serverIp + 'user-name/' + this.sessionId).then((req) => {
       this.name = req.data.name
     })
@@ -33,7 +34,7 @@ export default {
 
 <style scoped>
 a {
-  color: #fff;
+  color: black;
   font-size: calc(15px + 0.5vw)
 }
 </style>

@@ -18,5 +18,13 @@ export  function candidatesShow(state){
 export  function role(state){
   return state.role
 }
+export function isEnded(state){
+  return state.isEnded
+}
+export function winnerName(state){
+  return state.winnerName
+}
+
+
 
 

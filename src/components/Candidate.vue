@@ -1,15 +1,12 @@
 <template>
   <div class="candidate-wrapper flex column justify-center items-center"
        v-if="!(candidate.name.includes('Против') && role === 2)">
-    <div class="candidate shadow-10 flex column justify-center items-center q-mt-lg">
+    <div class="candidate shadow-10 flex column justify-center items-center">
       <div class="image-wrapper flex column justify-center">
-        <img :src="candidate.image" alt="Фото кондидата">
+        <img :src="serverIp + candidate.image" alt="Фото кондидата">
       </div>
       <h4 class="q-my-sm">{{ candidate.name + ' ' + candidate.surname }}</h4>
-      <h6>Голосов онлайн: {{ candidate.onlineVotes }}</h6>
-      <h6>Голосов офлайн: {{ candidate.offlineVotes }}</h6>
       <div class="color-line" :style="{'background-color': color}"/>
-
     </div>
     <q-btn :style="{'background-color': color}" class="q-mt-md" v-if="sessionId && !isVoted && role !== 2" @click="vote">
       Проголосовать
@@ -24,15 +21,6 @@ import constants from "src/js/constants";
 
 export default {
   username: "Elected",
-  // data() {
-  //   // setInterval(() => {
-  //   //   console.log(this.sessionId)
-  //   // })
-  //   // this.role = this.getRole(this.sessionId)
-  //   return {
-  //     // role: null
-  //   }
-  // },
   props: {
     candidate: {
       default: {
@@ -44,6 +32,11 @@ export default {
       }
     },
     color: {default: 'red'},
+  },
+  data(){
+    return{
+      serverIp: constants.serverIp
+    }
   },
   methods: {
     ...mapMutations('mainStore', ['mutateVote']),
@@ -58,39 +51,10 @@ export default {
       })
       this.mutateVote()
     },
-    // async getRole(sessionId) {
-    //   let role
-    //   await axios.get(constants.serverIp + 'get-role/' + sessionId).then((req) => {
-    //     role = req.data
-    //   }).catch((req) => {
-    //     console.log(req)
-    //   })
-    //   return role
-    // }
   },
   computed: {
-    ...mapGetters('mainStore', ['sessionId', 'isVoted', 'candidatesShow', 'role']),
-    // role(){
-    //   let role
-    //   this.getRole(this.sessionId).then(req => {
-    //     role = req
-    //   })
-    //   // console.log()
-    //   return role
-    // },
-    // sessionIdValue(){
-    //   return this.sessionId
-    // }
+    ...mapGetters('mainStore', ['sessionId', 'isVoted', 'role']),
   },
-  // watch: {
-  //   sessionIdValue: function () {
-  //     if (this.sessionId) {
-  //       console.log('a' + this.sessionId)
-  //       this.role = this.getRole(this.sessionId)
-  //     }
-  //     console.log(this.role)
-  //   }
-  // }
 }
 </script>
 

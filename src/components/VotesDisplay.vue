@@ -9,6 +9,7 @@
          :key="id"
          :style="{'background-color': this.colors[id - 1]}"
     >
+      {{this.candidatesPercentage[id - 1][1].toFixed(1) + '%'}}
     </div>
   </div>
 </template>
@@ -32,8 +33,9 @@ export default {
       window.addEventListener('resize', this.onResize);
     })
     axios.get(constants.serverIp + 'percentage/').then((req) => {
-      this.candidatesPercentage = Object.values(req.data)
+      this.candidatesPercentage = req.data
     })
+
   },
   data() {
     return {
@@ -66,7 +68,8 @@ export default {
     gridSettings() {
       if (this.candidatesPercentage) {
         let settings = `${this.candidatesCount},`
-        return settings + this.candidatesPercentage.join('% ') + '%'
+        console.log(this.candidatesPercentage)
+        return settings + this.candidatesPercentage.map(el => {return el[1]}).join('% ') + '%'
       }
       return null
     },
@@ -101,6 +104,7 @@ export default {
 
 .candidate-bar-part {
   overflow: hidden;
+  color: white;
   //font-size: 100%;
 
 }

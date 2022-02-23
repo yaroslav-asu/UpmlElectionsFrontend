@@ -1,27 +1,34 @@
 <template>
-  <q-layout class="flex column">
-    <header class="">
-      <div class="limiter flex justify-between items-center q-my-sm">
-        <Logo>Выборы ЮФМЛ</Logo>
-        <HeaderNavigation v-if="isNameShown"/>
+  <q-layout class="flex column justify-between items-center text-center">
+    <header class=" q-my-lg">
+      <div class="limiter flex  items-center"
+           :class="{
+              'justify-between': role !== 2,
+              'justify-center': role === 2,
+           }">
+        <Logo :style="{'font-size': role === 2 ? '2.5vw': ''}">
+          Выборы презедента ЮФМЛ
+        </Logo>
+        <HeaderNavigation v-if="role !== 2"/>
       </div>
     </header>
-
-    <div class="limiter">
-      <section class="candidates-wrapper q-mb-xl">
-        <div class="candidates flex justify-center">
-          <Candidate
-            v-for="(candidate, id) in candidates"
-            :key="candidate"
-            :candidate="candidate"
-            :color="candidatesColors[id]"
-          />
-        </div>
-      </section>
-      <section class="votes q-mb-xl" v-if="isVoted || isVoteDisplayShown">
+    <section class="candidates-wrapper limiter flex column justify-center">
+      <div class="candidates flex justify-center">
+        <Candidate
+          v-for="(candidate, id) in candidates"
+          :key="candidate"
+          :candidate="candidate"
+          :color="candidatesColors[id]"
+        />
+      </div>
+    </section>
+    <h2 class="congratulations" v-if="winnerName">Поздравляем {{ winnerName }} с победой!</h2>
+    <div class="limiter q-my-md">
+      <section class="votes flex column justify-center q-px-md" v-if="isVoted || isVoteDisplayShown">
         <VotesDisplay :colors="candidatesColors" :candidates="candidates"/>
       </section>
     </div>
+
   </q-layout>
 </template>
 
@@ -54,10 +61,14 @@ export default {
     VotesDisplay,
   },
   mounted() {
-
+    setInterval(() => {
+      document.location.reload()
+    }, 2000 * 60)
     axios.get(constants.serverIp + 'candidates/').then((req) => {
       this.candidates = req.data
-      // this.candidatesColors = this.generateCandidatesColors()
+    })
+    axios.get(constants.serverIp + 'winner-name/').then(req => {
+      this.winnerName = req.data
     })
   },
   data() {
@@ -65,7 +76,8 @@ export default {
       candidates: null,
       // candidatesColors: null,
       width: null,
-      role: null,
+      winnerName: '',
+      // role: null,
     }
   },
   methods: {
@@ -81,7 +93,7 @@ export default {
 
   },
   computed: {
-    ...mapGetters('mainStore', ['sessionId', 'isVoted', 'isVoteDisplayShown', 'isNameShown', 'candidatesShow']),
+    ...mapGetters('mainStore', ['sessionId', 'isVoted', 'isVoteDisplayShown', 'isNameShown', 'role']),
     candidatesColors() {
       if (this.candidates) {
         return this.generateCandidatesColors(Object.keys(this.candidates).length)
@@ -94,14 +106,32 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.layout-wrapper {
+  height: 100%;
+}
+
+.q-layout {
+  min-height: 100vh !important;
+}
+
+.limiter {
+  flex-grow: 1;
+
+}
 
 header {
-  background-color: $primary;
-  color: white;
+  color: black;
+  width: 100%;
+
 
   .limiter {
     height: 100%;
   }
+}
+
+.votes {
+  flex-grow: 1;
+  //min-height: 100px;
 }
 
 .candidate-wrapper {

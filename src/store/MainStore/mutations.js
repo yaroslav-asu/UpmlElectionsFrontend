@@ -21,3 +21,9 @@ export function changeRole(state, role){
   state.role = role
 }
 
+export function toggleEnd(state){
+  state.isEnded = !state.isEnded
+}
+export function changeWinnerName(state, name){
+  state.winnerName = name
+}
