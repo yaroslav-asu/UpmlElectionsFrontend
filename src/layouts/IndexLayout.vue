@@ -25,7 +25,7 @@
     <h2 class="congratulations" v-if="winnerName">Поздравляем
       {{ morphName(name = winnerName[0], surname = winnerName[1], gender = winnerName[2]) }} с победой!</h2>
     <div class="limiter q-my-md">
-      <section class="votes flex column justify-center q-px-md" v-if="isVoted || isVoteDisplayShown">
+      <section class="votes flex column justify-center q-px-md">
         <VotesDisplay :colors="candidatesColors" :candidates="candidates"/>
       </section>
     </div>

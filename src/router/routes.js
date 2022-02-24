@@ -39,7 +39,14 @@ const routes = [
     path: '/qr-login',
     component: () => import('layouts/QrLoginLayout.vue'),
     children: [
-      {path: ':adminSessionId/:name/:surname/:patronymic', component: () => import('pages/QrLogin.vue')}
+      {path: ':name_hash', component: () => import('pages/QrLogin.vue')}
+    ]
+  },
+  {
+    path: '/who-voted',
+    component: () => import('layouts/VotesDisplayLayout.vue'),
+    children: [
+      {path: ':name_hash', component: () => import('pages/VotesDisplayPage.vue')}
     ]
   },
 

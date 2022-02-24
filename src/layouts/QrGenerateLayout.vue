@@ -1,5 +1,5 @@
 <template>
-  <q-layout class="flex column items-center q-mt-md">
+  <q-layout class="flex column items-center q-mt-md" v-if="role !== 0">
     <q-form @submit="submit" class="flex column justify-center items-center">
       <q-input type="text"
                v-model="username"
@@ -23,6 +23,7 @@
 import {mapGetters} from "vuex";
 import axios from "axios";
 import constants from "src/js/constants";
+import {sha256} from "js-sha256";
 
 export default {
   name: "QrGenerateLayout",
@@ -37,13 +38,18 @@ export default {
   },
   methods: {
     submit() {
-      this.qrCodeLink = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://elections.zoncord.tech/qr-login/' + this.sessionId + '/' + this.username.split(' ').join('/')
-      // axios.get().then(req => {
-      //   console.log(req.data)
-      // })
+      this.registerUser()
+      this.qrCodeLink = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://192.168.43.76:8080/qr-login/' + sha256(this.username + 'salt1')
+    },
+    registerUser(){
+      let formData = new FormData();
+      formData.append('name', this.username.split(' ')[0]);
+      formData.append('surname', this.username.split(' ')[1]);
+      formData.append('patronymic', this.username.split(' ')[2]);
+      formData.append('admin_session_id', this.sessionId);
+      axios.post(constants.serverIp + 'register/', formData)
     }
   }
-
 }
 </script>
 

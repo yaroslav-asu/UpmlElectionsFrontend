@@ -1,3 +1,3 @@
 export default {
-  serverIp: 'https://elections-backend-upml.herokuapp.com/'
+  serverIp: 'http://127.0.0.1:8000/'
 }
