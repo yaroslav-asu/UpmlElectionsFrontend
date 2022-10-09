@@ -49,7 +49,7 @@ module.exports = configure(function (ctx) {
       vueRouterMode: 'history', // available values: 'hash', 'history'
 
       // transpile: false,
-      // publicPath: '/',
+      publicPath: '/',
 
       // Add dependencies for transpiling with Babel (Array of string/regex)
       // (from node_modules, which are by default not transpiled).
@@ -217,6 +217,7 @@ module.exports = configure(function (ctx) {
         chain.plugin('eslint-webpack-plugin')
           .use(ESLintPlugin, [{ extensions: [ 'js' ] }])
       },
+
 
       // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain
       chainWebpackPreload (chain) {

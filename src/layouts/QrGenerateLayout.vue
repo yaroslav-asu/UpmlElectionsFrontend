@@ -39,9 +39,9 @@ export default {
   methods: {
     submit() {
       this.registerUser()
-      this.qrCodeLink = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://192.168.43.76:8080/qr-login/' + sha256(this.username + 'salt1')
+      this.qrCodeLink = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + 'https://localhost:8080'+ '/qr-login/' + sha256(this.username + 'salt1')
     },
-    registerUser(){
+    registerUser() {
       let formData = new FormData();
       formData.append('name', this.username.split(' ')[0]);
       formData.append('surname', this.username.split(' ')[1]);

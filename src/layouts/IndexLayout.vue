@@ -3,13 +3,13 @@
     <header class=" q-my-lg">
       <div class="limiter flex  items-center"
            :class="{
-              'justify-between': role !== 2,
-              'justify-center': role === 2,
+              'justify-between': false,
+              'justify-center': true,
            }">
-        <Logo :style="{'font-size': role === 2 ? '2.5vw': ''}">
-          Выборы презедента ЮФМЛ
+        <Logo :style="{'font-size': '2.5vw'}">
+          Выборы президента ЮФМЛ
         </Logo>
-        <HeaderNavigation v-if="role !== 2"/>
+        <HeaderNavigation v-if="false"/>
       </div>
     </header>
     <section class="candidates-wrapper limiter flex column justify-center">
@@ -26,7 +26,8 @@
       {{ morphName(name = winnerName[0], surname = winnerName[1], gender = winnerName[2]) }} с победой!</h2>
     <div class="limiter q-my-md">
       <section class="votes flex column justify-center q-px-md">
-        <VotesDisplay :colors="candidatesColors" :candidates="candidates"/>
+<!--        <VotesDisplay :candidates="candidates" :colors="generateCandidatesColors(5)"></VotesDisplay>-->
+        <Element></Element>
       </section>
     </div>
 
@@ -37,12 +38,11 @@
 import Logo from "components/Logo";
 import HeaderNavigation from "components/HeaderNavigation";
 import Candidate from "components/Candidate";
-import VotesDisplay from "components/VotesDisplay";
 import axios from "axios";
 import {mapGetters,} from 'vuex'
 import constants from "src/js/constants";
 var petrovich = require('petrovich');
-
+import Element from "components/Element";
 function hsbToHex(h, s, b) {
   b /= 100;
   const a = s * Math.min(b, 1 - b) / 100;
@@ -60,7 +60,8 @@ export default {
     Logo,
     HeaderNavigation,
     Candidate,
-    VotesDisplay,
+    Element,
+    // VotesDisplay,
   },
   mounted() {
     setInterval(() => {

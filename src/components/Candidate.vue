@@ -8,7 +8,7 @@
       <h4 class="q-my-sm">{{ candidate.name + ' ' + candidate.surname }}</h4>
       <div class="color-line" :style="{'background-color': color}"/>
     </div>
-    <q-btn :style="{'background-color': color}" class="q-mt-md" v-if="sessionId && !isVoted && role !== 2" @click="vote">
+    <q-btn :style="{'background-color': color}" class="q-mt-md" @click="vote" v-if="false">
       Проголосовать
     </q-btn>
   </div>
@@ -41,6 +41,7 @@ export default {
   methods: {
     ...mapMutations('mainStore', ['mutateVote']),
     vote() {
+      console.log(this.candidate.candidateId)
       axios.post(constants.serverIp + 'vote/', {
         session_id: this.sessionId,
         candidate_id: this.candidate.candidateId

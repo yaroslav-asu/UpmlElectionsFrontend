@@ -19,7 +19,7 @@ export default {
       this.login(req.data[0])
       this.changeRole(req.data[1])
     })
-    // this.$router.push('/')
+    this.$router.push('/')
   },
   methods: {
     ...mapMutations('mainStore', ['login', 'changeRole'])

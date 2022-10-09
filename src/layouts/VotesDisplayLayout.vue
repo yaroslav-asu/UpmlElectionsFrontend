@@ -1,8 +1,8 @@
 <template>
 <q-layout class="flex column justify-center items-center">
-  <ul>
-    <li v-for="name in names" :key="name"> {{ name.join(' ')}}</li>
-  </ul>
+<!--  <ul>-->
+<!--    <li v-for="name in names" :key="name"> {{ name.join(' ')}}</li>-->
+<!--  </ul>-->
 </q-layout>
 </template>
 
@@ -15,7 +15,8 @@ export default {
   name: "VotesDisplayLayout",
   mounted() {
     axios.get(constants.serverIp + 'voters-data/' + this.sessionId).then(req => {
-      this.names = req.data
+      console.log(req.data)
+      // this.names = req.data
     })
   },
   data(){

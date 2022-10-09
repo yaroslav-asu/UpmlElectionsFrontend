@@ -4,12 +4,14 @@
     'grid-template-columns': `repeat(${columnsTemplate})`,
     'grid-template-rows': `repeat(${rowsTemplate})`,
   }">
+
     <div class="candidate-bar-part flex items-center justify-center text-center"
          v-for="id in candidatesCount"
          :key="id"
          :style="{'background-color': this.colors[id - 1]}"
     >
-      {{this.candidatesPercentage[id - 1][1].toFixed(1) + '%'}}
+      <p v-if="!(parseInt(candidatesPercentage) === 11)"> {{this.candidatesPercentage[id - 1][1].toFixed(2) + '%'}}</p>
+
     </div>
   </div>
 </template>
