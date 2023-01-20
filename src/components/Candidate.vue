@@ -5,17 +5,18 @@
       <div class="image-wrapper flex column justify-center">
         <img :src="serverIp + candidate.image" alt="Фото кондидата">
       </div>
-      <h4 class="q-my-sm">{{ candidate.name + ' ' + candidate.surname }}</h4>
-      <div class="color-line" :style="{'background-color': color}"/>
+      <h4 class="q-my-sm">{{ candidate.name + " " + candidate.surname }}</h4>
+      <div class="color-line" :style="{'background-color': color}" />
     </div>
-    <q-btn :style="{'background-color': color}" class="q-mt-md" v-if="sessionId && !isVoted && role !== 2" @click="vote">
+    <q-btn :style="{'background-color': color}" class="q-mt-md" v-if="sessionId && !isVoted && role !== 2"
+           @click="vote">
       Проголосовать
     </q-btn>
   </div>
 </template>
 
 <script>
-import {mapGetters, mapMutations,} from 'vuex'
+import { mapGetters, mapMutations } from "vuex";
 import axios from "axios";
 import constants from "src/js/constants";
 
@@ -24,38 +25,38 @@ export default {
   props: {
     candidate: {
       default: {
-        name: 'Voloďa',
-        surname: 'Simkin',
-        image: 'http://www.rosphoto.com/images/u/articles/1510/4_8.jpg',
+        name: "Voloďa",
+        surname: "Simkin",
+        image: "http://www.rosphoto.com/images/u/articles/1510/4_8.jpg",
         offlineVotes: 10000,
-        onlineVotes: 10000,
+        onlineVotes: 10000
       }
     },
-    color: {default: 'red'},
+    color: { default: "red" }
   },
-  data(){
-    return{
+  data() {
+    return {
       serverIp: constants.serverIp
-    }
+    };
   },
   methods: {
-    ...mapMutations('mainStore', ['mutateVote']),
+    ...mapMutations("mainStore", ["mutateVote"]),
     vote() {
-      axios.post(constants.serverIp + 'vote/', {
+      axios.post(constants.serverIp + "vote/", {
         session_id: this.sessionId,
         candidate_id: this.candidate.candidateId
       }).then((req) => {
-        console.log(req)
+        console.log(req);
       }).catch((req) => {
-        console.log(req)
-      })
-      this.mutateVote()
-    },
+        console.log(req);
+      });
+      this.mutateVote();
+    }
   },
   computed: {
-    ...mapGetters('mainStore', ['sessionId', 'isVoted', 'role']),
-  },
-}
+    ...mapGetters("mainStore", ["sessionId", "isVoted", "role"])
+  }
+};
 </script>
 
 <style scoped>

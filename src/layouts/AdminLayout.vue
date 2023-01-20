@@ -49,6 +49,12 @@
         v-model="isEnded"
         :model-value="isEnded"
       />
+      <q-checkbox
+        label="Показать распределение голосов"
+        @update:model-value="toggleShowVotes()"
+        v-model="isVoteDisplayChecked"
+        :model-value="isVoteDisplayChecked"
+      />
     </div>
     <div class="unautorised flex column justify-center items-center text-center" v-else>
       <h1>У вас недостаточно полномочий</h1>
@@ -57,36 +63,34 @@
 </template>
 
 <script>
-import CandidateSettings from "components/CandidateSettings";
-import {ref} from "vue";
 import axios from "axios";
 import constants from "src/js/constants";
-import {mapGetters, mapMutations} from "vuex";
+import { mapGetters, mapMutations } from "vuex";
+import { toggleVoteDisplay } from "src/store/MainStore/mutations";
 
 export default {
   name: "Admin",
   mounted() {
-
-    this.isVoteDisplayChecked = this.isVoteDisplayShown
-    this.isNameShowed = this.isNameShown
-    axios.get(constants.serverIp + 'candidates/').then((req) => {
+    this.isVoteDisplayChecked = this.isVoteDisplayShown;
+    this.isNameShowed = this.isNameShown;
+    axios.get(constants.serverIp + "candidates/").then((req) => {
       for (let i in req.data) {
         if (req.data[i].gender) {
-          req.data[i].gender = 'Мужской'
+          req.data[i].gender = "Мужской";
         } else {
-          req.data[i].gender = 'Женский'
+          req.data[i].gender = "Женский";
         }
       }
 
-      this.candidatesSettingsList = req.data
+      this.candidatesSettingsList = req.data;
     }).catch(
       (req) => {
-        console.log(req)
+        console.log(req);
       }
-    )
-    axios.get(constants.serverIp + 'is-ended/').then(req => {
-      this.isEnded = req.data
-    })
+    );
+    axios.get(constants.serverIp + "is-ended/").then(req => {
+      this.isEnded = req.data;
+    });
   },
   data() {
     return {
@@ -96,72 +100,75 @@ export default {
       isNameShowed: null,
       candidatesShow: [],
       isEnded: false,
-      selectOptions: ['Мужской', 'Женский']
-    }
+      selectOptions: ["Мужской", "Женский"]
+    };
   },
   methods: {
-    ...mapMutations('mainStore', ['toggleVoteDisplay', 'toggleNameShow', 'changeCandidatesShown', 'changeWinnerName']),
+    ...mapMutations("mainStore", ["toggleVoteDisplay", "toggleNameShow", "changeCandidatesShown", "changeWinnerName", "toggleVoteDisplay"]),
     changeOfflineVotes(id, action) {
-      if (action === '+') {
-        this.candidatesSettingsList[id].offlineVotes++
+      if (action === "+") {
+        this.candidatesSettingsList[id].offlineVotes++;
       } else {
-        this.candidatesSettingsList[id].offlineVotes--
+        this.candidatesSettingsList[id].offlineVotes--;
       }
-      this.changeCandidateData(id)
+      this.changeCandidateData(id);
     },
     addCandidate() {
-      axios.post(constants.serverIp + 'add-empty-candidate', {session_id: this.sessionId}).then((req) => {
+      axios.post(constants.serverIp + "add-empty-candidate", { session_id: this.sessionId }).then((req) => {
         this.candidatesSettingsList.push(
           {
             candidateId: req.data[0],
-            name: '',
-            surname: '',
-            image: '',
+            name: "",
+            surname: "",
+            image: "",
             offlineVotes: 0,
-            gender: 'Мужской'
+            gender: "Мужской"
           }
-        )
-      })
+        );
+      });
     },
     toggleEnd() {
-      this.isEnded = !this.isEnded
-      axios.post(constants.serverIp + 'toggle-end', {session_id: this.sessionId}).then(req => {
-        this.changeWinnerName(req.data)
-        console.log(req.data)
-      })
+      this.isEnded = !this.isEnded;
+      axios.post(constants.serverIp + "toggle-end", { session_id: this.sessionId }).then(req => {
+        this.changeWinnerName(req.data);
+        console.log(req.data);
+      });
+    },
+    toggleShowVotes() {
+      this.isVoteDisplayChecked = !this.isVoteDisplayChecked;
+      this.toggleVoteDisplay();
     },
     deleteCandidate(id) {
-      axios.post(constants.serverIp + 'delete-candidate/', {
+      axios.post(constants.serverIp + "delete-candidate/", {
         session_id: this.sessionId,
         candidate_id: this.candidatesSettingsList[id].candidateId
-      })
-      this.candidatesSettingsList.splice(id, 1)
+      });
+      this.candidatesSettingsList.splice(id, 1);
     },
     changeCandidateData(id) {
-      console.log(this.candidatesSettingsList[id].candidateId, this.sessionId, this.candidatesSettingsList[id].name, this.candidatesSettingsList[id].surname, this.candidatesSettingsList[id].offlineVotes, this.candidatesSettingsList[id].gender == 'Мужской' ? 1 : 0)
       let formData = new FormData();
-      formData.append('candidate_id', this.candidatesSettingsList[id].candidateId);
-      formData.append('session_id', this.sessionId);
-      formData.append('name', this.candidatesSettingsList[id].name);
-      formData.append('surname', this.candidatesSettingsList[id].surname);
-      formData.append('gender', this.candidatesSettingsList[id].gender === 'Мужской' ? 1 : 0);
-      if (this.candidatesSettingsList[id].image && typeof this.candidatesSettingsList[id].image !== 'string') {
-        formData.append('image', this.candidatesSettingsList[id].image);
+      formData.append("candidate_id", this.candidatesSettingsList[id].candidateId);
+      formData.append("session_id", this.sessionId);
+      formData.append("name", this.candidatesSettingsList[id].name);
+      formData.append("surname", this.candidatesSettingsList[id].surname);
+      formData.append("gender", this.candidatesSettingsList[id].gender === "Мужской" ? 1 : 0);
+      if (this.candidatesSettingsList[id].image && typeof this.candidatesSettingsList[id].image !== "string") {
+        formData.append("image", this.candidatesSettingsList[id].image);
       }
-      formData.append('offline_votes', this.candidatesSettingsList[id].offlineVotes);
-      axios.post(constants.serverIp + 'change-candidate/', formData, {
+      formData.append("offline_votes", this.candidatesSettingsList[id].offlineVotes);
+      axios.post(constants.serverIp + "change-candidate/", formData, {
         headers: {
-          'Content-Type': 'multipart/form-data'
+          "Content-Type": "multipart/form-data"
         }
       }).then((req) => {
-        console.log(req)
-      })
+        console.log(req);
+      });
     }
   },
   computed: {
-    ...mapGetters('mainStore', ['sessionId', 'isVoteDisplayShown', 'isNameShown', 'role'])
-  },
-}
+    ...mapGetters("mainStore", ["sessionId", "isVoteDisplayShown", "isNameShown", "role"])
+  }
+};
 </script>
 
 <style lang="scss" scoped>
